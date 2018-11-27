@@ -294,32 +294,33 @@ class Restaurants extends React.Component{
 	render() {
 		return(
 			<div>
+			<div class="header">
+			
 			<div class="container">
-  				<div class="row">
-   				 <div class="col-auto">
-   				 <Checkbox />
-      				<div class="row">
-   				 <div class="col-auto mr-auto">
-      			<Dropdown/>
-      				</div>
-      				</div>
-    			</div>
-    			
-    		<div class="col-auto">
-      			<img src={require('./style/DealToEat.jpg')} class="img-responsive " />
-   			 </div>
-    		<div class="col-auto">
-      			<SearchBar/>
-   			 </div>
- 			 </div>
+				<div class="col-sm">
+				<img src={require('./style/DealToEat.jpg')} class="img-responsive " />
+				</div>
+	  				<div class="row">
+	   				 <div class="col-sm">
+	   				 <Dropdown/>
+	    			</div>
+	    			
+	    		<div class="col-sm">
+	      			 <Checkbox />
+	   			 </div>
+	    		<div class="col-sm">
+	      			<SearchBar/>
+	   			 </div>
+	 			 </div>
 			</div>
-				
+			</div>
+			<div>
 				{this.props.value.map((restaurant)=>{
 					return <Restaurant value ={restaurant}/>
 					})
 				}
 			</div>
-
+			</div>
 		)
 	}
 }
@@ -337,7 +338,7 @@ class Restaurant extends React.Component {
 	render() {
 		return (
 			<div class="container">
-
+			<br></br><br></br>
 				<h2>{this.props.value.title}</h2>
 				
 					<div class="row">
@@ -358,7 +359,7 @@ class Restaurant extends React.Component {
 						</div>
 					</div>
 
-					<div class="row">
+					<div class="row align-items-center">
 						<div class="col-auto">
      						<b>Nombre d'étoiles :</b>
    					 	</div>
@@ -366,7 +367,14 @@ class Restaurant extends React.Component {
       			       		{getStars(this.props.value)}
       			       </div>
       				</div>
-
+      				<div class="row">
+						<div class="col-auto">
+     						<b>Note Clients :</b>
+   					 	</div>
+						<div class="col-auto">
+      			       		{this.props.value.AvisClient}
+      			       </div>
+      				</div>
       				<div class="row">
       					<div class="col-auto">
 							<b>Nom du chef :</b> 
