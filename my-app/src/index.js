@@ -1,10 +1,52 @@
 import './style/index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Pagination from'./pagination.js'
 import restaurants from  './Liste-restaurants_lafourchette';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button} from 'reactstrap';
 
 var accents = require('remove-accents');
+
+var isfilteredByCuisine =false;
+var isfilteredBystars =false;
+
+var filter ={'OneStar':false,'TwoStars':false,'ThreeStars':false,'Cuisine':'','City':''};
+
+function filterAll(){
+	var filteredRestos = [];
+	if(isfilteredBystars==true && isfilteredByCuisine==false){
+		filteredRestos=getRestaurantByStars(filter.OneStar,filter.TwoStars,filter.ThreeStars);
+	}
+	if(isfilteredBystars==false && isfilteredByCuisine==true){
+		filteredRestos=filterRestaurant(filter.Cuisine);
+	}
+	if(isfilteredBystars==true && isfilteredByCuisine==true){
+		var tabint1=[];
+		tabint1=getRestaurantByStars(filter.OneStar,filter.TwoStars,filter.ThreeStars);
+		var tabint2 = [];
+		tabint2=filterRestaurant(filter.Cuisine);
+		
+		filteredRestos=keepSames(tabint1,tabint2);
+		
+	}
+	if (isfilteredByCuisine==false && isfilteredBystars==false)
+		filteredRestos=restaurants;
+
+	console.log(isfilteredByCuisine);
+	return filteredRestos;
+}
+
+function keepSames(array1,array2) {
+	var out = [];
+  for(var i = 0;i<array1.length;i++){
+  	for (var j =0;j<array2.length;j++){
+  		if(array2[j]==array1[i])
+  			out.push(array2[j]);
+  	}
+  }
+  return out;
+}
 
 function IsOfferMichelin(props){
 	const michelin_offer = props.value[0];
@@ -73,7 +115,7 @@ class Checkbox extends React.Component {
 	    this.handleChange = this.handleChange.bind(this);
 	    this.handleChange2 = this.handleChange2.bind(this);
 	    this.handleChange3 = this.handleChange3.bind(this);
-	    this.handleSubmit = this.handleSubmit.bind(this);
+	    this.handleClick = this.handleClick.bind(this);
 	  }  
 
 	  handleChange(event) {
@@ -93,9 +135,14 @@ class Checkbox extends React.Component {
 	        checked3: !this.state.checked3    
 	    	})
 		 }
-		handleSubmit(event){
+		handleClick(event){
+			isfilteredBystars=true;
+			filter.OneStar=this.state.checked;
+			filter.TwoStars=this.state.checked2;
+			filter.ThreeStars=this.state.checked3;
+			
 			 ReactDOM.render(
-			    <Restaurants value={getRestaurantByStars(this.state.checked,this.state.checked2,this.state.checked3)}/>,
+			    <Restaurants value={filterAll()}/>,
 				  document.getElementById('root')
 				);
 			 event.preventDefault();
@@ -106,108 +153,115 @@ class Checkbox extends React.Component {
 	    const togglecheck3 = !this.state.checked3 ? 'hidden-check3' : '';
 
 	    return(
-	    	<form onSubmit={this.handleSubmit}>
+	    	
 		        <div class="container">
 		        <div class="row">
 		        	<div class="col-auto no-gutters">
-			        <label>1 Etoile</label>
+			        	<label>1 Etoile</label>
+			        </div>
+			    
+			        <div class="col-auto no-gutters">
+			        	<input type="checkbox" id="chk1"className="chk11" checked={ this.state.checked } onChange={ this.handleChange } />
+			        </div>
+			    </div>
+			    <div class="row">
+			        <div class="col-auto no-gutters">
+			        	<label>2 Etoiles</label>
 			        </div>
 			        <div class="col-auto no-gutters">
-			        <input type="checkbox" id="chk1"className="chk11" checked={ this.state.checked } onChange={ this.handleChange } />
+			        	<input type="checkbox" id="chk2" className="chk22" checked={ this.state.checked2 } onChange={ this.handleChange2 } />
 			        </div>
 			        <div class="col-auto no-gutters">
-			        <label>2 Etoiles</label>
+			        	<Button onClick={this.handleClick}  color="primary">Search</Button>
+			     	</div>
+			     </div>
+			     
+			     <div class = "row">
+			        <div class="col-auto no-gutters">
+			        	<label>3 Etoiles</label>
 			        </div>
 			        <div class="col-auto no-gutters">
-			        <input type="checkbox" id="chk2" className="chk22" checked={ this.state.checked2 } onChange={ this.handleChange2 } />
+			        	<input type="checkbox" id="chk3" className="chk33" checked={ this.state.checked3 } onChange={ this.handleChange3 } />
 			        </div>
-			        <div class="col-auto no-gutters">
-			        <label>3 Etoiles</label>
-			        </div>
-			        <div class="col-auto no-gutters">
-			        <input type="checkbox" id="chk3" className="chk33" checked={ this.state.checked3 } onChange={ this.handleChange3 } />
-			        </div>
-			        </div>
-	        		<input type="submit" value="Search" />
+			    </div>
+	        		
 		      	
 
 		      	</div>
-	        </form>
 	    );
 	  }
 }
 
+
+
 class Dropdown extends React.Component {
-constructor(){
- super();
+  constructor(props) {
+    super(props);
 
- this.state = {
-       displayMenu: false,
-       value:'',
-     };
+    this.toggle = this.toggle.bind(this);
+     this.handleClick = this.handleClick.bind(this);
+    this.state = {
+      dropdownOpen: false,
+      value : "Tous les Types"
+    };
+  }
 
-  this.showDropdownMenu = this.showDropdownMenu.bind(this);
-  this.hideDropdownMenu = this.hideDropdownMenu.bind(this);
-  this.handleChange=this.handleChange.bind(this);
+  toggle() {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
+  }
 
-};
-handleChange(event){
-	this.setState({value:event.target.value})
-	ReactDOM.render(
-			    <Restaurants value={filterRestaurant(this.state.value)}/>,
+  handleClick(event) {
+  	 this.setState({
+      value: event.target.innerText
+    });
+  	 isfilteredByCuisine=true;
+  	 filter.Cuisine=event.target.innerText;
+  	 ReactDOM.render(
+			    <Restaurants value={filterAll()}/>,
 				  document.getElementById('root')
 				);
 			 event.preventDefault();
-}
-showDropdownMenu(event) {
-    event.preventDefault();
-    this.setState({ displayMenu: true }, () => {
-    document.addEventListener('click', this.hideDropdownMenu);
-    });
-  }
-
-  hideDropdownMenu() {
-    this.setState({ displayMenu: false }, () => {
-      document.removeEventListener('click', this.hideDropdownMenu);
-    });
-
-  }
+		}
 
   render() {
     return (
-        <div  className="dropdown">
-        <br></br>
-         <div type="submit" className="button" onClick={this.showDropdownMenu}>Cuisine :  </div>
+    	<div>
+    	 <b>Type De Cuisine:   </b>
 
-          { this.state.displayMenu ? (
-          <ul>
-         <li><a className="active" value="" onChange={this.handleChange}>Tous les types</a></li>
-         <li><a value="Moderne" onChange={this.handleChange}>Moderne</a></li>
-         <li><a value="Gastronomique" onChange={this.handleChange}>Gastronomique</a></li>
-         <li><a value="Régionale Française" onChange={this.handleChange}>Régionale Française</a></li>
-         <li><a value="Végétarien" onChange={this.handleChange}>Végétarien</a></li>
-         <li><a value="Traditionnelle" onChange={this.handleChange}>Traditionnelle</a></li>
-          </ul>
-        ):
-        (
-          null
-        )
-        }
-
-       </div>
-
+      <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+        <DropdownToggle caret color="primary">
+          {this.state.value}
+        </DropdownToggle>
+        <DropdownMenu>
+          <DropdownItem onClick={this.handleClick}>Végétarien</DropdownItem>
+          <DropdownItem onClick={this.handleClick}>Gastronomique</DropdownItem>
+          <DropdownItem onClick={this.handleClick}>Classique</DropdownItem>
+          <DropdownItem onClick={this.handleClick}>Traditionnel</DropdownItem>
+          <DropdownItem onClick={this.handleClick}>Moderne</DropdownItem>
+          <DropdownItem onClick={this.handleClick}>Créative</DropdownItem>
+          <DropdownItem onClick={this.handleClick}>Végétalien</DropdownItem>
+          <DropdownItem onClick={this.handleClick}>Provençal</DropdownItem>
+          <DropdownItem onClick={this.handleClick}>Tous Les Types</DropdownItem>
+        </DropdownMenu>
+      </ButtonDropdown>
+      </div>
     );
   }
 }
 
 function filterRestaurant(type){
 	var tab=[];
-	
-		restaurants.map((restaurant)=>{
+	if(type==="Tous Les Types")
+		return restaurants;
+
+	restaurants.map((restaurant)=>{
 		if(aContainsB(accents.remove(restaurant.cuisine).toLowerCase(),accents.remove(type).toLowerCase()))
 			tab.push(restaurant);
 		return null;
 	});
+
 	
 	return tab;
 }
@@ -221,7 +275,15 @@ function getRestaurantByName(name){
 	return tab;
 }
 
-
+function getRestaurantByAdress(city){
+	var tab=[];
+	restaurants.map((restaurant)=>{
+		if(aContainsB(accents.remove(restaurant.address.locality).toLowerCase(),accents.remove(city).toLowerCase()))
+			tab.push(restaurant);
+		return null;
+	})
+	return tab;
+}
 
 function aContainsB (a, b) {
     return a.indexOf(b) >= 0;
@@ -257,34 +319,68 @@ class Restaurantsaddress extends React.Component{
 	}
 }
 
+
 class SearchBar extends React.Component {
 	constructor(props) {
 	  	super(props);
 
-	    this.state = {value: ''};
+	    this.state = {value1: '', dropdownOpen: false, value2:''
+      };
 	    this.handleChange = this.handleChange.bind(this);
-	  }
+    this.handleClick=this.handleClick.bind(this);
+     this.toggle = this.toggle.bind(this);
+    };
+  	
+  	toggle() {
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
+  }
 
+	handleClick(event) {
+  	 this.setState({
+  	 	value1:event.target.innerText
+  	 });
+  	
+	}
 	handleChange(event) {
-	    this.setState({value: event.target.value});
-	    ReactDOM.render(
+	    this.setState({value2: event.target.value});
+	    if(this.state.value1==="Ville"){
+	    	 ReactDOM.render(
 	    
-		  <Restaurants value={getRestaurantByName(this.state.value)}/>,
+		  <Restaurants value={getRestaurantByAdress(this.state.value2)}/>,
 		  document.getElementById('root')
 		);
+	    }
+	    if(this.state.value1==="Nom")
+	    {
+	    	 ReactDOM.render(
+	    
+		  <Restaurants value={getRestaurantByName(this.state.value2)}/>,
+		  document.getElementById('root')
+		);
+	    }
+	   
 
  	}
   render(){
   	return (
       <form onSubmit={this.handleSubmit}>
-        <label>
         <div class="col-auto">
-           <b>Rechercher :   </b>
+           <b>Rechercher Par:   </b>
+            <ButtonDropdown isOpen={this.state.dropdownOpen} toggle={this.toggle}>
+        		<DropdownToggle caret color="primary">
+          			{this.state.value1}
+       		 </DropdownToggle>
+       		 <DropdownMenu>
+       		 <DropdownItem onClick={this.handleClick}>Ville</DropdownItem>
+          	<DropdownItem onClick={this.handleClick}>Nom</DropdownItem>
+          	</DropdownMenu>
+        	</ButtonDropdown>
            </div>
            <div class="col-auto">
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
+          <input type="text" value={this.state.value2} onChange={this.handleChange} />
           </div>
-        </label>
       </form>
     );
   }
@@ -295,7 +391,6 @@ class Restaurants extends React.Component{
 		return(
 			<div>
 			<div class="header">
-			
 			<div class="container">
 				<div class="col-sm">
 				<img src={require('./style/DealToEat.jpg')} class="img-responsive " />
@@ -306,10 +401,11 @@ class Restaurants extends React.Component{
 	    			</div>
 	    			
 	    		<div class="col-sm">
-	      			 <Checkbox />
+	      			 <SearchBar/>
 	   			 </div>
 	    		<div class="col-sm">
-	      			<SearchBar/>
+
+	      			<Checkbox />
 	   			 </div>
 	 			 </div>
 			</div>
@@ -340,7 +436,6 @@ class Restaurant extends React.Component {
 			<div class="container">
 			<br></br><br></br>
 				<h2>{this.props.value.title}</h2>
-				
 					<div class="row">
 						<div class="col-auto">
 							<b>Type de cuisine :</b>
@@ -412,13 +507,13 @@ class Restaurant extends React.Component {
 							<Restaurantsaddress value = {this.props.value.address}/>
 						</div>	
 					</div>
+			}
 				
 			</div>
 		)
 	}
 }
-
 ReactDOM.render(
-  <Restaurants value={restaurants}/>,
+  <Restaurants value={filterAll()}/>,
   document.getElementById('root')
 );
