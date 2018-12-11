@@ -1,7 +1,6 @@
 import './style/index.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Pagination from'./pagination.js'
 import restaurants from  './Liste-restaurants_lafourchette';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Button} from 'reactstrap';
@@ -390,24 +389,21 @@ class Restaurants extends React.Component{
 	render() {
 		return(
 			<div>
-			<div class="header">
 			<div class="container">
-				<div class="col-sm">
-				<img src={require('./style/DealToEat.jpg')} class="img-responsive " />
-				</div>
-	  				<div class="row">
-	   				 <div class="col-sm">
-	   				 <Dropdown/>
+	  			<div class="row">
+	   				<div class="col-sm">
+	   				 	<SearchBar/>
+	   				 
 	    			</div>
-	    			
-	    		<div class="col-sm">
-	      			 <SearchBar/>
-	   			 </div>
-	    		<div class="col-sm">
+		    			
+		    		<div class="col-sm">
+		      			 <Dropdown/>
+		   			</div>
+		    		<div class="col-sm">
 
-	      			<Checkbox />
-	   			 </div>
-	 			 </div>
+		      			<Checkbox />
+		   			</div>
+	 		
 			</div>
 			</div>
 			<div>
@@ -513,6 +509,7 @@ class Restaurant extends React.Component {
 		)
 	}
 }
+
 ReactDOM.render(
   <Restaurants value={filterAll()}/>,
   document.getElementById('root')
