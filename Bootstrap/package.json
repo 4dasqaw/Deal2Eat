@@ -1,0 +1,62 @@
+{
+    "title": "Modern Business",
+    "name": "startbootstrap-modern-business",
+    "version": "4.1.1",
+    "description": "A multipurpose HTML website template built with Bootstrap",
+    "keywords": [
+        "css",
+        "sass",
+        "html",
+        "responsive",
+        "theme",
+        "template"
+    ],
+    "homepage": "https://startbootstrap.com/template-overviews/modern-business",
+    "bugs": {
+        "url": "https://github.com/BlackrockDigital/startbootstrap-modern-business/issues",
+        "email": "feedback@startbootstrap.com"
+    },
+    "license": "MIT",
+    "author": "Start Bootstrap",
+    "contributors": [
+        "David Miller (http://davidmiller.io/)"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/BlackrockDigital/startbootstrap-modern-business.git"
+    },
+    "dependencies": {
+        "bootstrap": "4.1.1",
+        "font-awesome": "^4.7.0",
+        "jquery": "3.3.1"
+    },
+    "devDependencies": {
+        "browser-sync": "2.24.5",
+        "gulp": "^3.9.1"
+    }
+	
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "ajv": "^6.2.1",
+    "ajv-keywords": "^3.1.0",
+    "bootstrap": "^4.0.0",
+    "cheerio": "^1.0.0-rc.2",
+    "jquery": "^3.3.1",
+    "package.json": "^2.0.1",
+    "popper.js": "^1.13.0",
+    "react": "^16.2.0",
+    "react-bootstrap": "^0.32.4",
+    "react-dom": "^16.2.0",
+    "react-scripts": "1.1.1",
+    "reactstrap": "^6.5.0",
+    "remove-accents": "^0.4.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
